@@ -168,5 +168,30 @@ namespace CityInfo.API.Controllers
 
             return NoContent();
         }
+
+        [Route("{cityId}/PointsOfInterest/{id}")]
+        [HttpDelete()]
+        public IActionResult DeletePointOfInterest(int cityId, int id, [FromBody] JsonPatchDocument<PointOfInterestForUpdateDto> patchDoc)
+        {
+            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            var pointOfInterestFromStore = city.PointsOfInterest.SingleOrDefault(e => e.Id == id);
+            if (pointOfInterestFromStore == null)
+            {
+                return NotFound();
+            }
+
+
+            city.PointsOfInterest.Remove(pointOfInterestFromStore);
+
+            return NoContent();
+
+        }
     }
+
+
 }
