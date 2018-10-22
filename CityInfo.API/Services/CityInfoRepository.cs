@@ -16,6 +16,17 @@ namespace CityInfo.API.Services
             _context = context;
         }
 
+        public void AddPointOfInterestForCity(int cityId, PointOfInterest pointOfInterest)
+        {
+            var city = GetCity(cityId, false);
+            city.PointsOfInterest.Add(pointOfInterest);
+        }
+
+        public bool Save()
+        {
+            return (_context.SaveChanges() > 0);
+        }
+
         public bool CityExists(int cityId)
         {
             return _context.Cities.Any(e => e.Id == cityId);
