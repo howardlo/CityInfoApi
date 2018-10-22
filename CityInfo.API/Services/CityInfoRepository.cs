@@ -16,6 +16,11 @@ namespace CityInfo.API.Services
             _context = context;
         }
 
+        public bool CityExists(int cityId)
+        {
+            return _context.Cities.Any(e => e.Id == cityId);
+        }
+
         public IEnumerable<City> GetCities()
         {
             return _context.Cities.OrderBy(e => e.Name).ToList();
@@ -30,7 +35,7 @@ namespace CityInfo.API.Services
             return _context.Cities.FirstOrDefault(e => e.Id == cityId);
         }
 
-        public IEnumerable<PointOfInterest> GetPointOfInterestForCity(int cityId)
+        public IEnumerable<PointOfInterest> GetPointsOfInterestForCity(int cityId)
         {
             return _context.PointsOfInterest
                 .Where(e => e.CityId == cityId).ToList();
