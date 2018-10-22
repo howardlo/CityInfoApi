@@ -25,7 +25,7 @@ namespace CityInfo.API
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appSettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appSettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables()
+                // .AddEnvironmentVariables()
                 ;
             Configuration = builder.Build();
         }
@@ -43,10 +43,12 @@ namespace CityInfo.API
 #endif
             string connectionString = Startup.Configuration["connectionStrings:cityInfoDBConnectionString"];
             services.AddDbContext<CityInfoContext>(o => o.UseSqlServer(connectionString));
+
+            services.AddScoped<ICityInfoRepository, CityInfoRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, CityInfoContext cityInfoContext)
         {
             // loggerFactory.AddConsole();
             // loggerFactory.AddDebug();
@@ -63,6 +65,8 @@ namespace CityInfo.API
             {
                 app.UseExceptionHandler("/error");
             }
+
+            cityInfoContext.EnsureSeedDataForContext();
 
             app.UseStatusCodePages();
 
